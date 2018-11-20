@@ -6,7 +6,7 @@
 
 typedef int USER_TYPE;
 
-#include "linear.h"
+#include "./linear.h"
 
 int cmpData(USER_TYPE one, USER_TYPE another);
 void showData(LINEAR head);
@@ -27,17 +27,17 @@ int cmpData(USER_TYPE one, USER_TYPE another){
 }
 
 int main(void){
-	LINEAR *linear;
+	LINEAR *linear = NULL;
 	USER_TYPE value;
 	int i;
 
 	initLinear(&linear, 100);
-//	for(i = 0; i < 6; i++){
-//		printf("请输入第%d个（共6个）数据：", i+1);
-//		scanf("%d", &value);
-//		appendLinear(linear, value);
-//	}	
-//	showData(*linear);
+	for(i = 0; i < 6; i++){
+		printf("请输入第%d个（共6个）数据：", i+1);
+		scanf("%d", &value);
+		appendLinear(linear, value);
+	}	
+	showData(*linear);
 
 	destoryLinear(&linear);
 

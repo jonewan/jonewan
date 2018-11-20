@@ -40,6 +40,16 @@ typedef struct LINEAR{		//线性表的控制头
 查找数据。
 
 注意：结构体类型不能直接比较
-
 int (*funp)(); <==> int () *funp; <==> type *funp;(函数指针)
 
+
+一元多项式的简单运算
+一元多项式例如：
+34.5x^15 + 6x^12 – 3.4x^4 + 5x -2.6
+多项式的表达：
+每一项表达成一个节点，且存储其系数和指数。
+typedef struct POLYNOMIAL{
+	double coefficient;//系数
+	int power;//指数
+} POLYNOMIAL;
+typedef POLYNOMIAL USER_TYPE;
