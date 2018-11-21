@@ -1,7 +1,10 @@
-//fileName:	replaceSpace.c
-//author:	jonewan
-//date:		2018/11/21
-
+//fileName:		replaceSpace.c
+//author:		jonewan
+//date:			2018/11/21
+/*description:请实现一个函数，把字符串中每个空格替换成"%20"。实现时间复杂度为O(n)！！！
+ *
+ *
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -26,7 +29,7 @@ void exchangeStr(char *str){
 
 	newTailIndex = enlargeStrLen(str);
 	printf("newStrLen = %d\n", newTailIndex);
-	while(newTailIndex > 0 && oldTailIndex > 0 && newTailIndex != oldTailIndex){
+	while(newTailIndex >= 0 && oldTailIndex >= 0 && newTailIndex > oldTailIndex){
 		if(!isspace(str[oldTailIndex])){
 			str[newTailIndex] = str[oldTailIndex];
 			printf("oldTailIndex = %d, newTailIndex = %d\n", oldTailIndex, newTailIndex);
