@@ -53,3 +53,14 @@ typedef struct POLYNOMIAL{
 	int power;//指数
 } POLYNOMIAL;
 typedef POLYNOMIAL USER_TYPE;
+
+4.5x^6-6.7x^3+5.4
+
+for(i = 0; i < 项数; i++){
+	if(0 == i)
+		处理系数输出方法；
+	else
+		处理系数输出方法；
+
+	处理指数；
+}

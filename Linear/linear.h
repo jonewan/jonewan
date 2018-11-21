@@ -39,7 +39,7 @@ void destoryLinear(LINEAR **head);
 boolean isLinearEmpty(LINEAR head);
 boolean isLinearFull(LINEAR head);
 boolean getLinearElementAt(USER_TYPE *data, LINEAR head, int index);
-int getLinearIndex(USER_TYPE data, LINEAR head, int (*cmp)(USER_TYPE, USER_TYPE));
+int getLinearIndex(USER_TYPE data, LINEAR head, int (*cmp)());
 boolean setLinearElementAt(LINEAR head, int index, USER_TYPE value);
 boolean appendLinear(LINEAR *head, USER_TYPE value);
 boolean insertLinearAt(LINEAR *head, int index, USER_TYPE value);
@@ -140,7 +140,7 @@ boolean setLinearElementAt(LINEAR head, int index, USER_TYPE value){
 	return ok;
 }
 
-int getLinearIndex(USER_TYPE data, LINEAR head, int (*cmp)(USER_TYPE, USER_TYPE)){
+int getLinearIndex(USER_TYPE data, LINEAR head, int (*cmp)()){
 	int i = 0;
 	boolean found = FALSE;	
 
@@ -184,7 +184,6 @@ void destoryLinear(LINEAR **head){
 	if((*head)->data != NULL)
 		free((*head)->data);
 	free(*head);
-	*head = NULL;
 }
 
 void initLinear(LINEAR **head,int maxRoom){
