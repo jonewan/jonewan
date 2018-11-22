@@ -179,20 +179,20 @@ boolean isLinearFull(LINEAR head){
 }
 
 void destoryLinear(LINEAR **head){
-	if((*head) == NULL)	return;
-	
-	if((*head)->data != NULL)
-		free((*head)->data);
-	free(*head);
+	if((*head) != NULL){	
+		if((*head)->data != NULL)
+			free((*head)->data);
+		free(*head);
+	}
 }
 
 void initLinear(LINEAR **head,int maxRoom){
-	if(*head != NULL)	return;
-
-	(*head) = (LINEAR *)malloc(sizeof(LINEAR));
-	(*head)->data = (USER_TYPE *)malloc(sizeof(USER_TYPE));
-	(*head)->linearMaxRoom = maxRoom;
-	(*head)->count = 0;
+	if(*head == NULL){
+		(*head) = (LINEAR *)malloc(sizeof(LINEAR));
+		(*head)->data = (USER_TYPE *)malloc(sizeof(USER_TYPE)*maxRoom);
+		(*head)->linearMaxRoom = maxRoom;
+		(*head)->count = 0;
+	}
 }
 
 
