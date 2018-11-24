@@ -38,6 +38,9 @@ boolean isStackFull(STACK head){
 boolean push(STACK *head, USER_TYPE value){
 	boolean ok = TRUE;
 	
+	if(head == NULL)
+		return FALSE;
+
 	if(isStackFull(*head) == TRUE)
 		ok = FALSE;
 	else
@@ -48,6 +51,9 @@ boolean push(STACK *head, USER_TYPE value){
 
 boolean pop(STACK *head, USER_TYPE *value){
 	boolean ok = TRUE;
+
+	if(head == NULL)
+		return FALSE;
 
 	if(isStackEmpty(*head) == TRUE)
 		ok = FALSE;
@@ -72,6 +78,9 @@ boolean readTop(STACK head, USER_TYPE *value){
 boolean destoryStack(STACK **head){
 	boolean ok = TRUE;
 
+	if(head == NULL)
+		return FALSE;
+
 	if(*head == NULL)
 		ok = FALSE;
 	else{
@@ -86,6 +95,9 @@ boolean destoryStack(STACK **head){
 
 boolean initStack(STACK **head, int maxRoom){
 	boolean ok = TRUE;
+
+	if(head == NULL)
+		return FALSE;
 
 	if(maxRoom <= 0)
 		ok = FALSE;
