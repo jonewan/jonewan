@@ -25,23 +25,23 @@ typedef unsigned char   CHILD_TYPE;
 #define LEFT_CHILD      0
 #define RIGHT_CHILD     1
 
-#define BEGIN                                     1
-#define ALPHA                                   2
-#define LEFT_BRACKET                       3
-#define RIGHT_BRACKET                      4
-#define COMMA                                   5
-#define END                                        6
+#define BEGIN						1
+#define ALPHA           2
+#define LEFT_BRACKET    3
+#define RIGHT_BRACKET   4
+#define COMMA           5
+#define END             6
 
-#define NO_ERROR                                                        -1
-#define ERROR_BEGIN_CODE                                            0
-#define ERROR_NOT_SINGLE_ALPHA                              1
-#define ERROR_MISSING_LEFT_BRACKET                          2
-#define ERROR_MISSING_RIGHT_CHILD                           3
-#define ERROR_MISSING_LEFT_CHILD                            4
+#define NO_ERROR																-1
+#define ERROR_BEGIN_CODE                        0
+#define ERROR_NOT_SINGLE_ALPHA                  1
+#define ERROR_MISSING_LEFT_BRACKET              2
+#define ERROR_MISSING_RIGHT_CHILD               3
+#define ERROR_MISSING_LEFT_CHILD                4
 #define ERROR_ILLEGAL_CODE_AFTER_RIGHT_BRACKET  5
-#define ERROR_MISSING_RIGHT_BRACKET                         6
-#define ERROR_TOO_MANY_ROOT                                     7
-#define ERROR_TOO_MANY_CHILDREN                                8
+#define ERROR_MISSING_RIGHT_BRACKET             6
+#define ERROR_TOO_MANY_ROOT                     7
+#define ERROR_TOO_MANY_CHILDREN                 8
 
 int errNo = NO_ERROR;
 const char *errMsg[] = {
