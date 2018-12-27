@@ -21,14 +21,7 @@ boolean isArrayGrow(int *arr, int index){
 		else
 			ok = FALSE;
 	}
-
-/*	{
-		if(arr[index] > arr[index-1])
-			return isArrayGrow(arr, index -1);
-		else
-			return FALSE;
-	}	*/
-
+	
 	return ok;
 }
 
