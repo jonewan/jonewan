@@ -41,10 +41,10 @@ SAI * lclend = NULL;		/* sockaddr_in structs */
 SAI * remend = NULL;
 HINF ** gates = NULL;		/* LSRR hop hostpoop */
 char * optbuf = NULL;		/* LSRR or sockopts */
-char * bigbuf_in;		/* data buffers */
-char * bigbuf_net;
-fd_set * ding1;			/* for select loop */
-fd_set * ding2;
+char * bigbuf_in = NULL;		/* data buffers */
+char * bigbuf_net = NULL;
+fd_set * ding1 = NULL;			/* for select loop */
+fd_set * ding2 = NULL;
 PINF * portpoop = NULL;		/* for getportpoop / getservby* */
 unsigned char * stage = NULL;	/* hexdump line buffer */
 
@@ -53,7 +53,7 @@ USHORT o_alla = 0;
 USHORT o_allowbroad = 0;
 unsigned int o_interval = 0;
 USHORT o_listen = 0;
-USHORT o_nflag = 0;
+USHORT o_nflag = 1;//默认不指定dns
 USHORT o_wfile = 0;
 USHORT o_udpmode = 0;
 USHORT o_verbose = 0;
@@ -63,6 +63,12 @@ USHORT o_zero = 0;
 int o_quit = 1; /* 0 == quit-now; >0 == quit after o_quit seconds */
 /* o_tn in optional section */
 
+const char wrote_txt[] = " sent %d, rcvd %d";
+static char hexnibs[20] = "0123456789abcdef  ";
+
+static char unknown[] = "(UNKNOWN)";
+static char p_tcp[] = "tcp";	/* for getservby* */
+static char p_udp[] = "udp";
 
 /* support routines -- the bulk of this thing.  Placed in such an order that
    we don't have to forward-declare anything: */
@@ -95,6 +101,26 @@ char * p1, *p2, *p3, *p4, *p5, *p6;
   }
 } /* holler */
 
+/*free malloc bufs*/
+static void freeBufs(void) {
+	if (timer1) { free(timer1); timer1 = NULL; }
+	if (timer2) { free(timer2); timer2 = NULL; }
+#ifdef INET6
+	if (lclend6) { free(lclend6); lclend6 = NULL; }
+	if (remend6) { free(remend6); remend6 = NULL; }
+#endif
+	if (lclend) { free(lclend); lclend = NULL; }
+	if (remend) { free(remend); remend = NULL; }
+	if (gates) { free(gates); gates = NULL; }
+	if (optbuf) { free(optbuf); optbuf = NULL; }
+	if (bigbuf_in) { free(bigbuf_in); bigbuf_in = NULL; }
+	if (bigbuf_net) { free(bigbuf_net); bigbuf_net = NULL; }
+	if (ding1) { free(ding1); ding1 = NULL; }
+	if (ding2) { free(ding2); ding2 = NULL; }
+	if (portpoop) { free(portpoop); portpoop = NULL; }
+	if (stage) { free(stage); stage = NULL; }
+}
+
 /* bail :
    error-exit handler, callable from anywhere */
 void bail(str, p1, p2, p3, p4, p5, p6)//错误退出的处理函数
@@ -104,6 +130,7 @@ char * p1, *p2, *p3, *p4, *p5, *p6;
   o_verbose = 1;
   holler (str, p1, p2, p3, p4, p5, p6);
   close (netfd);
+  freeBufs();
   exit (1);
 } /* bail */
 
@@ -121,8 +148,10 @@ void catch (void)//无脑中断函数
    handler for a "-q" timeout (exit 0 instead of 1) */
 void quit(void)
 {
-  close(netfd);
-  exit(0);
+	close(netfd);
+	freeBufs();
+
+	exit(0);
 }
 
 /* timeout and other signal handling cruft */
@@ -1541,6 +1570,7 @@ int readwrite(int fd)
 				if (o_quit == 0) {//根据设置的时间，做延时退出处理
 					shutdown(netfd, 1);//关闭netfd套接字的所有写连接
 					close(fd);//关闭文件描述符fd
+					freeBufs();//free bufs
 					exit(0);//退出程序
 				}
 				/* if user asked to die after a while, arrange for it */
@@ -1586,8 +1616,6 @@ int readwrite(int fd)
 			Debug(("wrote %d to stdout, errno %d", rr, errno))
 		} /* rnleft */
 		
-		/**************************************************************/
-
 		/* 本地 -> 网络的写工作*/
 		if (rzleft) {
 			rr = rzleft;
@@ -1602,7 +1630,6 @@ int readwrite(int fd)
 			Debug(("wrote %d to net, errno %d", rr, errno))
 		} /* rzleft */
 
-		/**************************************************************/
 		if ((rzleft) || (rnleft)) {		/* shovel that shit till they ain't */
 			wretry--;			/* none left, and get another load */
 			goto shovel;
@@ -1617,9 +1644,9 @@ int readwrite(int fd)
    translate \-'s into -'s, returns start */
 char * unescape(char *start)
 {
-  char * end;
-  char * next;
-  char * p;
+  char * end = NULL;
+  char * next = NULL;
+  char * p = NULL;
 
   end = start + strlen(start);
   next = start;
@@ -1642,9 +1669,8 @@ void helpme(void)
 	o_verbose = 1;
 	o_holler_stderr = 0;
 	holler("netpack: [v1.00]\n\
-connect to somewhere:	np [-options] hostname port[s] [ports] [-f zipFileName] [-k password] [-a] [-o] [-0] -[1] -[9] dir[s] file[s] \n\
-listen for inbound:	np -l -p port [-options] [hostname] [port] [-f zipFileName] [-k password] [-a] [-o] [-0] -[1] -[9] dir[s] file[s]\n\
-options:");
+Usage:	np 192.xxx.xxx.xxx:0000 [file[s] || dir[s]] \
+options:");//listen for inbound:	np -l -p port [-options] [hostname] [port] [-f zipFileName] [-k password] [-a] [-o] [-0] -[1] -[9] dir[s] file[s]\n
 	holler("\
 	-1\tCompress faster\n\
 	-9\tCompress better\n\
@@ -1652,12 +1678,13 @@ options:");
 	-o\tOverwrite existing file.cvtelog.zip \n\
 	-f\tAssign the zip fileName \n\
 	-k\tpassword the zip file\n");
+#ifdef LISTEN_MODE //如果需要使用监听模式时定义LISTEN_MODE这个宏
+	holler("-l\tlisten mode, for inbound connects\n\
+	-p\tport	local port number\n");
+#endif
 	holler("\
 	-h\tthis cruft\n\
-	-l\tlisten mode, for inbound connects\n\
 	-n\tnumeric-only IP addresses, no DNS\n\
-	-p\tport	local port number\n\
-	-q\tsecs	quit after EOF on stdin and delay of secs, default 1\n\
 	-s\taddr	local source address\n\
 	-0\tStore only\n");
 #ifdef TELNET
@@ -1669,7 +1696,6 @@ options:");
 	-v\tverbose [use twice to be more verbose]\n\
 	-w\tsecs	timeout for connects and final net reads\n\
 	-z\tzero-I/O mode [used for scanning]");
-	bail("port numbers can be individual or ranges: lo-hi [inclusive];\n\
-hyphens in port names must be backslash escaped (e.g. 'ftp\\-data').");
+	bail("\n\nAthor by jonewan at 2019/01/11\nAny question send email to i_wangjiahao@cvte.com\n");
 } /* helpme */
 #endif /* HAVE_HELP */

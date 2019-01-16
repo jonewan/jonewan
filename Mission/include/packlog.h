@@ -6,7 +6,7 @@
 
 #include "minizip.h"
 
-int writeOneFilesInzip(char *filenameinzip, zipFile zf, int opt_compress_level, char *password);
+int writeOneFilesInzip(const char *filenameinzip, zipFile zf, int opt_compress_level, char *password);
 int writeDirInZip(const char *path, zipFile zf, int opt_compress_level, char *password);
 
 #endif

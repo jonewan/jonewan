@@ -2,29 +2,26 @@
 
 int writeDirInZip(const char *path, zipFile zf, int opt_compress_level, char *password) {
 	struct dirent *filename = NULL;
-	struct stat s_buf;
 	DIR *dp = NULL;
-	int err = 0;
+	struct stat s_buf;
 	char file_path[MAXFILENAME];
+	int err = 0;
 
 	if (path == NULL) {
 		printf("Error: PATH NOT CORRECT!\n");
 		return -1;
 	}
-	printf("%d\n", __LINE__);
 	dp = opendir(path);
 	if (dp == NULL) {
 		printf("Can not open %s\n", path);
-		return 0;
+		return -1;
 	}
-	printf("****dp = %p*****\n", dp);
 	while ((filename = readdir(dp)) != NULL) {//readdir()必须循环调用，要读完整个目录的文件，readdir才会返回NULL,若未读完，继续循环
 		bzero(file_path, MAXFILENAME);
 		strcat(file_path, path);
 		if (path[strlen(path)-1] != '/')
 			strcat(file_path, "/");
 		strcat(file_path, filename->d_name);
-		printf("%d\n", __LINE__);
 
 		/*略过每层目录的.与..，因为没有意义且会导致死循环*/
 		if (strcmp(filename->d_name, ".") == 0 || strcmp(filename->d_name, "..") == 0) {
@@ -32,11 +29,10 @@ int writeDirInZip(const char *path, zipFile zf, int opt_compress_level, char *pa
 		}
 
 		/*获取文件信息，把信息放到s_buf中*/
-
 		err = stat(file_path, &s_buf);
 		if (err != 0) {//如果文件名输入错误，提醒用户并退出
 			printf("Warning: name not matched: [ %s ] \n", file_path);
-			exit(EXIT_FAILURE);
+			return (-1);
 		}
 		/*判断是否目录*/
 		if (S_ISDIR(s_buf.st_mode)) {
@@ -62,14 +58,6 @@ int writeOneFilesInzip(char *filenameinzip, zipFile zf, int opt_compress_level, 
 	unsigned long crcFile = 0;
 	void* buf = NULL;
 	int size_buf = WRITEBUFFERSIZE;
-
-	//	while (filenameinzip[0] == '\\' || filenameinzip[0] == '/') {
-	//		filenameinzip++;//略过文件名称中的路径符号
-	//	}
-	/*配置zip的文件信息*/
-	//zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour = 0;
-	//zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
-	//zi.dosDate = zi.internal_fa = zi.external_fa = 0;
 
 	if (access(filenameinzip, R_OK) != 0) {
 		printf("No Access Permission in [ %s ]!!!\n", filenameinzip);

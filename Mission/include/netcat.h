@@ -33,10 +33,10 @@
 
 /* conditional includes -- a very messy section which you may have to dink
    for your own architecture [and please send diffs...]: */
-   /* #undef _POSIX_SOURCE		/* might need this for something? */
+   /* #undef _POSIX_SOURCE*/		/* might need this for something? */
 #undef HAVE_BIND		/* ASSUMPTION -- seems to work everywhere! */
 #define HAVE_HELP		/* undefine if you dont want the help text */
-/* #define ANAL			/* if you want case-sensitive DNS matching */
+/* #define ANAL*/			/* if you want case-sensitive DNS matching */
 
 #ifdef AESCRYPT
 #include <mix/mix.h>
@@ -68,7 +68,7 @@
 #define RAND rand
 #endif /* HAVE_RANDOM */
 
-/* #define POSIX_SETJMP		/* If you want timeouts to work under the */
+/* #define POSIX_SETJMP*/		/* If you want timeouts to work under the */
 				/* posixly correct, yet non-standard glibc-2.x*/
 				/* then define this- you may also need it for */
 				/* IRIX, and maybe some others */
@@ -90,6 +90,7 @@
 #include <errno.h>
 #include <signal.h>
 #include <fcntl.h>		/* O_WRONLY et al */
+#include <unistd.h>
 #ifdef LINUX			/* Linux needs the HERE, oh well. */
 #include <resolv.h>
 #endif
@@ -143,13 +144,6 @@ struct port_poop {
 	USHORT num;			/* real host-order number */
 };
 #define PINF struct port_poop
-
-static char wrote_txt[] = " sent %d, rcvd %d";
-static char hexnibs[20] = "0123456789abcdef  ";
-
-static char unknown[] = "(UNKNOWN)";
-static char p_tcp[] = "tcp";	/* for getservby* */
-static char p_udp[] = "udp";
 
 /* Debug macro: squirt whatever message and sleep a bit so we can see it go
    by.  need to call like Debug ((stuff)) [with no ; ] so macro args match!

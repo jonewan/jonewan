@@ -132,9 +132,7 @@ int isLargeFile(const char* filename){
 
 	if (pFile != NULL)
 	{
-		int n;
-		
-		n = FSEEKO_FUNC(pFile, 0, SEEK_END);
+		FSEEKO_FUNC(pFile, 0, SEEK_END);
 		pos = FTELLO_FUNC(pFile);
 
 		printf("File : %s is %lld bytes\n", filename, pos);
